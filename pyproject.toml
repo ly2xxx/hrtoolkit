@@ -1,10 +1,10 @@
-# Dependencies for the AI-Powered Succession Planning Application
+# Dependencies for the AI-Powered Succession Planning Application with Team Dynamics Analysis
 # Install with: uv pip install streamlit pandas numpy plotly openpyxl
 
 [project]
 name = "succession-planning-app"
-version = "1.0.0"
-description = "AI-Powered Succession Planning Application using 360-degree reviews"
+version = "2.0.0"
+description = "AI-Powered Succession Planning Application with Team Dynamics Analysis using 360-degree reviews"
 readme = "README.md"
 authors = [
     {name = "AI Assistant", email = "assistant@example.com"},
@@ -18,6 +18,13 @@ dependencies = [
     "numpy>=1.24.0",
     "plotly>=5.15.0",
     "openpyxl>=3.1.0",
+]
+
+# Enhanced features (same installation command works)
+enhanced-dependencies = [
+    # All the above dependencies are sufficient for the enhanced version
+    # NLP functionality is implemented using built-in regex and string processing
+    # No additional dependencies required
 ]
 
 # Development dependencies (optional)

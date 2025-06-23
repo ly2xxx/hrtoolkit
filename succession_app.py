@@ -6,6 +6,7 @@ from plotly.subplots import make_subplots
 import numpy as np
 from sample_data import generate_360_review_data
 from succession_planning import SuccessionPlanningAnalyzer
+from team_dynamics import TeamDynamicsAnalyzer
 
 # Page config
 st.set_page_config(
@@ -39,6 +40,28 @@ st.markdown("""
     }
     .low-priority {
         border-left: 4px solid #66bb6a;
+    }
+    .toxic-alert {
+        background-color: #ffebee;
+        border-left: 4px solid #f44336;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    .positive-highlight {
+        background-color: #e8f5e8;
+        border-left: 4px solid #4caf50;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    .review-text-box {
+        background-color: #f8f9fa;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid #e1e5eb;
+        margin: 0.5rem 0;
+        font-style: italic;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -275,6 +298,238 @@ def display_team_analytics():
         )
         st.plotly_chart(fig_scatter, use_container_width=True)
 
+def display_team_dynamics():
+    """Display team dynamics analysis including toxic behavior detection"""
+    st.header("🤝 Team Dynamics Analysis")
+    
+    reviews_df = load_sample_data()
+    dynamics_analyzer = TeamDynamicsAnalyzer(reviews_df)
+    
+    # Generate team health report
+    health_report = dynamics_analyzer.generate_team_health_report()
+    
+    # Team Health Overview
+    st.markdown("### 🏥 Team Health Overview")
+    
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        health_score = health_report['team_health_score']
+        health_status = "🟢 Excellent" if health_score > 0.7 else "🟡 Needs Attention" if health_score > 0.4 else "🔴 Critical"
+        st.metric("Team Health Score", f"{health_score:.2f}", 
+                 delta=health_status)
+    
+    with col2:
+        toxicity = health_report['team_toxicity']
+        st.metric("Team Toxicity", f"{toxicity:.2f}", 
+                 delta=f"{'🔴 High' if toxicity > 0.4 else '🟡 Medium' if toxicity > 0.2 else '🟢 Low'}")
+    
+    with col3:
+        positivity = health_report['team_positivity']
+        st.metric("Team Positivity", f"{positivity:.2f}",
+                 delta=f"{'🟢 High' if positivity > 0.6 else '🟡 Medium' if positivity > 0.3 else '🔴 Low'}")
+    
+    with col4:
+        tensions = health_report['active_tensions']
+        st.metric("Active Tensions", tensions,
+                 delta=f"{'🔴 Many' if tensions > 3 else '🟡 Some' if tensions > 1 else '🟢 Few'}")
+    
+    # Toxic Behavior Alerts
+    if health_report['high_risk_individuals']:
+        st.markdown("### ⚠️ Toxic Behavior Alerts")
+        
+        toxic_analysis = dynamics_analyzer.analyze_toxic_behaviors()
+        
+        for person in health_report['high_risk_individuals']:
+            person_data = toxic_analysis[person]
+            
+            st.markdown(f"""
+            <div class="toxic-alert">
+                <strong>🚨 {person}</strong> - Risk Level: {person_data['risk_level']}<br>
+                Overall Toxicity Score: {person_data['overall_toxicity']:.2f}<br>
+                <small>Requires immediate attention and intervention</small>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            # Show specific toxic behaviors
+            if person_data['examples']:
+                with st.expander(f"View toxic behavior examples for {person}"):
+                    for behavior_type, examples in person_data['examples'].items():
+                        st.markdown(f"**{behavior_type.replace('_', ' ').title()}:**")
+                        for example in examples[:2]:  # Show first 2 examples
+                            st.markdown(f"• *{example}*")
+    
+    # Team Champions
+    if health_report['team_champions']:
+        st.markdown("### 🌟 Team Champions")
+        
+        positive_analysis = dynamics_analyzer.analyze_positive_dynamics()
+        
+        cols = st.columns(min(3, len(health_report['team_champions'])))
+        
+        for i, person in enumerate(health_report['team_champions']):
+            person_data = positive_analysis[person]
+            
+            with cols[i % 3]:
+                st.markdown(f"""
+                <div class="positive-highlight">
+                    <strong>⭐ {person}</strong><br>
+                    Collaboration Level: {person_data['collaboration_level']}<br>
+                    Positivity Score: {person_data['overall_positivity']:.2f}<br>
+                    <small>Great role model for team collaboration</small>
+                </div>
+                """, unsafe_allow_html=True)
+    
+    # Active Tensions
+    if health_report['tension_details']:
+        st.markdown("### ⚡ Active Team Tensions")
+        
+        for tension in health_report['tension_details']:
+            severity_color = {"High": "🔴", "Medium": "🟡", "Low": "🟢"}
+            severity_icon = severity_color.get(tension['severity'], "🔵")
+            
+            st.markdown(f"""
+            **{severity_icon} {tension['person']}** - {tension['tension_type']}
+            
+            *{tension['description']}*
+            """)
+            
+            if tension['evidence']:
+                with st.expander(f"Evidence for {tension['person']}"):
+                    for evidence in tension['evidence'][:3]:  # Show first 3 pieces of evidence
+                        st.markdown(f"• *{evidence}*")
+            
+            if tension['recommendations']:
+                with st.expander(f"Recommendations for {tension['person']}"):
+                    for rec in tension['recommendations']:
+                        st.markdown(f"• {rec}")
+            
+            st.markdown("---")
+    
+    # Team-wide Recommendations
+    st.markdown("### 📋 Team-wide Recommendations")
+    
+    for recommendation in health_report['recommendations']:
+        st.markdown(f"• {recommendation}")
+    
+    # Relationship Network Visualization
+    st.markdown("### 🕸️ Team Relationship Network")
+    
+    relationships = dynamics_analyzer.analyze_relationship_network()
+    
+    if relationships:
+        # Create network visualization data
+        nodes = []
+        edges = []
+        all_people = set()
+        
+        for person, mentions in relationships.items():
+            all_people.add(person)
+            for mention in mentions:
+                all_people.add(mention['mentioned_person'])
+                
+                # Color edges by sentiment
+                edge_color = 'green' if mention['sentiment'] > 0.2 else 'red' if mention['sentiment'] < -0.2 else 'gray'
+                
+                edges.append({
+                    'from': person,
+                    'to': mention['mentioned_person'],
+                    'sentiment': mention['sentiment'],
+                    'color': edge_color,
+                    'context': mention['context']
+                })
+        
+        # Display relationship summary
+        st.markdown("**Relationship Sentiment Summary:**")
+        
+        positive_relationships = len([e for e in edges if e['sentiment'] > 0.2])
+        negative_relationships = len([e for e in edges if e['sentiment'] < -0.2])
+        neutral_relationships = len(edges) - positive_relationships - negative_relationships
+        
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.metric("Positive Mentions", positive_relationships)
+        with col2:
+            st.metric("Neutral Mentions", neutral_relationships)
+        with col3:
+            st.metric("Negative Mentions", negative_relationships)
+        
+        # Show some relationship examples
+        if negative_relationships > 0:
+            st.markdown("**⚠️ Concerning Relationship Patterns:**")
+            negative_edges = [e for e in edges if e['sentiment'] < -0.2]
+            for edge in negative_edges[:3]:  # Show first 3
+                st.markdown(f"• {edge['from']} → {edge['to']}: *{edge['context']}*")
+
+def display_enhanced_development_plans():
+    """Display enhanced development plans with review text analysis"""
+    st.header("📈 Enhanced Development Plans")
+    
+    reviews_df = load_sample_data()
+    analyzer = get_succession_analyzer(reviews_df)
+    
+    # Employee selection
+    employees = reviews_df['employee_name'].unique()
+    selected_employee = st.selectbox("Select Employee for Development Plan:", employees)
+    
+    if selected_employee:
+        col1, col2 = st.columns([1, 1])
+        
+        with col1:
+            # Display competency radar chart
+            fig = display_employee_radar_chart(analyzer, selected_employee)
+            if fig:
+                st.plotly_chart(fig, use_container_width=True)
+        
+        with col2:
+            # Get development plan
+            dev_plan = analyzer.generate_development_plan(selected_employee)
+            
+            if 'error' not in dev_plan:
+                st.markdown(f"**Development Plan for {dev_plan['employee_name']}**")
+                st.markdown(f"*Current Role:* {dev_plan['current_role']}")
+                st.markdown(f"*Target Role:* {dev_plan['target_role']}")
+                st.markdown(f"*Timeline:* {dev_plan['timeline']}")
+        
+        # Show original review texts
+        st.markdown("### 📝 Original Review Texts")
+        
+        employee_reviews = reviews_df[reviews_df['employee_name'] == selected_employee]
+        
+        for _, review in employee_reviews.iterrows():
+            with st.expander(f"Review from {review['reviewer_type']} - {review['review_date'].strftime('%Y-%m-%d')}"):
+                st.markdown(f"""
+                <div class="review-text-box">
+                    {review['review_text']}
+                </div>
+                """, unsafe_allow_html=True)
+                
+                # Show extracted scores
+                st.markdown("**Extracted Competency Scores:**")
+                score_cols = [col for col in review.index if col.endswith('_score')]
+                score_data = {col.replace('_score', '').replace('_', ' ').title(): 
+                             review[col] for col in score_cols}
+                
+                score_df = pd.DataFrame(list(score_data.items()), columns=['Competency', 'Score'])
+                st.dataframe(score_df, use_container_width=True)
+        
+        # Development actions (same as before)
+        if 'development_actions' in dev_plan and dev_plan['development_actions']:
+            st.markdown("### 🚀 Recommended Development Actions")
+            
+            for action in dev_plan['development_actions']:
+                priority_class = f"{action['priority'].lower()}-priority"
+                
+                st.markdown(f"""
+                <div class="candidate-card {priority_class}">
+                    <strong>{action['competency']}</strong> - {action['priority']} Priority<br>
+                    Current Score: {action['current_score']} → Target: {action['target_score']} 
+                    (Gap: {action['gap']})<br><br>
+                    <strong>Recommended Actions:</strong><br>
+                    {'<br>'.join([f"• {act}" for act in action['recommended_actions']])}
+                </div>
+                """, unsafe_allow_html=True)
+
 def main():
     """Main application"""
     st.title("🎯 AI-Powered Succession Planning")
@@ -287,13 +542,15 @@ def main():
     st.sidebar.title("Navigation")
     page = st.sidebar.radio(
         "Choose a view:",
-        ["Succession Planning", "Development Plans", "Team Analytics", "Raw Data"]
+        ["Succession Planning", "Development Plans", "Team Dynamics", "Team Analytics", "Raw Data"]
     )
     
     if page == "Succession Planning":
         display_succession_candidates()
     elif page == "Development Plans":
-        display_development_plans()
+        display_enhanced_development_plans()
+    elif page == "Team Dynamics":
+        display_team_dynamics()
     elif page == "Team Analytics":
         display_team_analytics()
     elif page == "Raw Data":

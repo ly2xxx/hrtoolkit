@@ -1,40 +1,69 @@
-# 🎯 AI-Powered Succession Planning Application
+# 🎯 AI-Powered Succession Planning Application with Team Dynamics Analysis
 
-A comprehensive Streamlit application that demonstrates how Generative AI can transform talent management by analyzing 360-degree reviews to identify succession candidates and create personalized development plans.
+A comprehensive Streamlit application that demonstrates how Generative AI can transform talent management by analyzing human text reviews from 360-degree feedback to identify succession candidates, create personalized development plans, and detect toxic team dynamics.
 
-## ✨ Features
+## ✨ Enhanced Features
 
-- **360-Degree Review Analysis**: Processes comprehensive feedback from managers, peers, direct reports, and cross-functional partners
-- **Succession Candidate Identification**: Uses AI algorithms to identify top candidates for leadership roles based on competency scores and readiness
-- **Personalized Development Plans**: Generates tailored development recommendations with specific actions and timelines
+### 🔍 Human Text Review Analysis
+- **Natural Language Processing**: Extracts competency scores from actual human review text instead of numerical ratings
+- **Sentiment Analysis**: Analyzes tone and sentiment in feedback to understand team dynamics
+- **Realistic Review Generation**: Creates human-like review comments that reveal personality traits and team interactions
+
+### 🚨 Team Dynamics & Toxic Behavior Detection  
+- **Toxic Pattern Recognition**: Identifies dismissive language, credit stealing, undermining behaviors, and office politics
+- **Relationship Network Analysis**: Maps team relationships and detects negative sentiment patterns
+- **Intervention Recommendations**: Provides specific actions to address toxic behaviors and improve team health
+- **Team Health Scoring**: Comprehensive team wellness metrics with alerts for high-risk individuals
+
+### 📈 Advanced Succession Planning
+- **Text-Based Competency Scoring**: Derives scores from review text content using NLP techniques
+- **Succession Candidate Identification**: Uses AI algorithms to identify top candidates based on authentic feedback
+- **Personalized Development Plans**: Generates tailored recommendations with specific actions and timelines
 - **Interactive Dashboards**: Beautiful visualizations including competency radar charts, team heatmaps, and performance analytics
-- **Sample Data**: Includes realistic sample data for 8 team members across different organizational levels
+
+### 📊 Comprehensive Analytics
+- **Team Champions Identification**: Highlights positive role models and collaboration leaders
+- **Conflict Detection**: Identifies interpersonal tensions and provides resolution strategies
+- **Credit Attribution Analysis**: Detects patterns of credit sharing vs. credit stealing
+- **Sample Data**: Includes realistic sample data for 8 team members with authentic review text
 
 ## 🏗️ Architecture
 
 ### Core Components
 
-1. **Data Generation (`sample_data.py`)**
-   - Generates realistic 360-degree review data
-   - Covers 8 employees from Graduate to VP levels
-   - Includes 12 key competencies with role-appropriate scoring
+1. **Enhanced Data Generation (`sample_data.py`)**
+   - Generates realistic human text reviews for 360-degree feedback
+   - Creates authentic personality traits and team dynamics patterns
+   - Includes subtle toxic behavior indicators and positive collaboration examples
+   - Extracts competency scores from review text using NLP techniques
 
-2. **Succession Planning Engine (`succession_planning.py`)**
-   - `SuccessionPlanningAnalyzer`: Main analysis class
-   - Competency-based candidate ranking
+2. **Team Dynamics Analysis Engine (`team_dynamics.py`) - NEW**
+   - `TeamDynamicsAnalyzer`: Comprehensive team health analysis
+   - Toxic behavior pattern detection (credit stealing, dismissive language, undermining)
+   - Positive collaboration pattern identification
+   - Relationship network analysis and sentiment mapping
+   - Intervention recommendation generation
+
+3. **Succession Planning Engine (`succession_planning.py`)**
+   - `SuccessionPlanningAnalyzer`: Enhanced with text-based analysis
+   - Competency-based candidate ranking from review text
    - Development gap identification
    - Personalized action plan generation
 
-3. **Streamlit Application (`succession_app.py`)**
-   - Multi-page interface with navigation
+4. **Enhanced Streamlit Application (`succession_app.py`)**
+   - Multi-page interface with new Team Dynamics page
    - Interactive visualizations using Plotly
-   - Real-time analytics and insights
+   - Real-time toxic behavior alerts
+   - Original review text display with extracted scores
 
 ### Key Algorithms
 
-- **Succession Scoring**: Weighted competency scores based on target role requirements
-- **Gap Analysis**: Identifies development needs by comparing current vs. required competency levels
-- **Development Planning**: Generates specific, actionable development recommendations
+- **Text-Based NLP Scoring**: Extracts competency scores from human review text using keyword analysis and sentiment detection
+- **Toxic Pattern Recognition**: Uses regex patterns to identify dismissive language, credit attribution issues, and undermining behaviors
+- **Relationship Sentiment Analysis**: Analyzes mentions of team members in reviews to detect positive/negative relationships
+- **Team Health Scoring**: Combines toxicity and positivity metrics to generate overall team wellness indicators
+- **Succession Scoring**: Enhanced weighted competency scores based on authentic feedback content
+- **Intervention Planning**: Generates specific recommendations based on detected behavioral patterns
 
 ## 🚀 Quick Start
 
@@ -102,24 +131,34 @@ streamlit run succession_app.py
 
 ### 1. Succession Planning Dashboard
 - **Overview**: Displays current role holders and their top succession candidates
-- **Ranking**: Shows candidates ranked by succession readiness score
+- **Ranking**: Shows candidates ranked by succession readiness score based on text analysis
 - **Metrics**: Includes overall performance scores, experience, and team size considerations
 
-### 2. Development Plans
+### 2. Enhanced Development Plans
 - **Employee Selection**: Choose any team member for detailed analysis
 - **Competency Radar**: Visual representation of current competency levels
-- **Gap Analysis**: Identifies specific areas for development
+- **Original Review Text**: Display actual human review comments with extracted scores
+- **Gap Analysis**: Identifies specific areas for development from text analysis
 - **Action Plans**: Concrete, prioritized development recommendations
 
-### 3. Team Analytics
+### 3. Team Dynamics Analysis - NEW 🚨
+- **Team Health Overview**: Comprehensive wellness metrics and toxicity alerts
+- **Toxic Behavior Detection**: Real-time alerts for dismissive language, credit stealing, and undermining
+- **Team Champions**: Highlights positive role models and collaboration leaders
+- **Active Tensions**: Identifies interpersonal conflicts with evidence and resolution strategies
+- **Relationship Network**: Visualizes team sentiment patterns and communication dynamics
+- **Intervention Recommendations**: Specific actions to improve team health
+
+### 4. Team Analytics
 - **Team Metrics**: Overall team performance statistics
 - **Competency Heatmap**: Visual overview of team strengths and gaps
 - **Performance Distribution**: Charts showing team performance patterns
 - **Experience vs Performance**: Scatter plot analysis
 
-### 4. Raw Data
-- **360-Review Data**: Complete dataset with all review details
-- **Data Summary**: Key statistics about the dataset
+### 5. Raw Data
+- **360-Review Data**: Complete dataset with original human review text
+- **Extracted Scores**: Shows how competency scores were derived from text
+- **Data Summary**: Key statistics about the dataset and text analysis
 
 ## 🎯 Sample Team Structure
 
@@ -210,11 +249,14 @@ flake8 .
 
 ## 📈 Key Insights Demonstrated
 
-1. **AI-Driven Succession Planning**: Moves beyond traditional "gut feeling" approaches to data-driven candidate identification
-2. **Competency-Based Development**: Focuses development efforts on specific, measurable competency gaps
-3. **360-Degree Integration**: Synthesizes feedback from multiple sources for comprehensive talent assessment
-4. **Personalized Recommendations**: Generates specific, actionable development plans tailored to individual needs
-5. **Visual Analytics**: Makes complex HR data accessible through intuitive visualizations
+1. **Text-Based AI Analysis**: Moves beyond numerical ratings to analyze actual human feedback language for deeper insights
+2. **Toxic Behavior Detection**: Proactively identifies office politics, credit stealing, and undermining behaviors from review text
+3. **Team Dynamics Intelligence**: Understands collaboration patterns, conflicts, and relationship networks through sentiment analysis
+4. **Authentic Competency Assessment**: Derives meaningful scores from real feedback rather than artificial numerical ratings
+5. **Intervention-Focused Recommendations**: Provides specific, actionable steps to address both individual development and team health issues
+6. **Early Warning System**: Detects team dysfunction before it escalates through pattern recognition in feedback language
+7. **360-Degree Integration**: Synthesizes feedback from multiple sources with awareness of reviewer bias and relationship dynamics
+8. **Visual Analytics**: Makes complex HR and team dynamics data accessible through intuitive visualizations
 
 ## 🤝 Use Cases
 
@@ -245,3 +287,8 @@ If you encounter any issues:
 4. Check the Streamlit logs for specific error messages
 
 For additional support, please refer to the Streamlit and uv documentation linked above.
+
+---
+## 📚 References
+### Claude Code overview
+[![ MCP client](https://img.youtube.com/vi/iYiuzAsWnHU/hqdefault.jpg)](https://m.youtube.com/watch?v=iYiuzAsWnHU)
