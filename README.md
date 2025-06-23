@@ -74,7 +74,7 @@ A comprehensive Streamlit application that demonstrates how Generative AI can tr
 
 4. **Install dependencies**:
    ```bash
-   uv pip install -e .
+   uv pip install streamlit pandas numpy plotly openpyxl
    ```
 
 5. **Run the application**:

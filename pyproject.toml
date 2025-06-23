@@ -1,39 +1,32 @@
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+# Dependencies for the AI-Powered Succession Planning Application
+# Install with: uv pip install streamlit pandas numpy plotly openpyxl
 
 [project]
 name = "succession-planning-app"
 version = "1.0.0"
 description = "AI-Powered Succession Planning Application using 360-degree reviews"
 readme = "README.md"
-license = {file = "LICENSE"}
 authors = [
     {name = "AI Assistant", email = "assistant@example.com"},
 ]
 requires-python = ">=3.8"
+
+# Core dependencies - install with uv pip install
 dependencies = [
     "streamlit>=1.28.0",
-    "pandas>=2.0.0",
+    "pandas>=2.0.0", 
     "numpy>=1.24.0",
     "plotly>=5.15.0",
     "openpyxl>=3.1.0",
 ]
 
-[project.optional-dependencies]
-dev = [
+# Development dependencies (optional)
+dev-dependencies = [
     "pytest>=7.0.0",
     "black>=23.0.0",
     "flake8>=6.0.0",
     "mypy>=1.5.0",
 ]
-
-[project.urls]
-Homepage = "https://github.com/example/succession-planning-app"
-Repository = "https://github.com/example/succession-planning-app.git"
-
-[project.scripts]
-succession-app = "succession_app:main"
 
 [tool.black]
 line-length = 88
