@@ -24,6 +24,7 @@ st.markdown("""
         padding: 1rem;
         border-radius: 0.5rem;
         border-left: 4px solid #1f77b4;
+        color: #000000;
     }
     .candidate-card {
         background-color: #ffffff;
@@ -31,15 +32,19 @@ st.markdown("""
         border-radius: 0.5rem;
         border: 1px solid #e1e5eb;
         margin-bottom: 1rem;
+        color: #000000;
     }
     .high-priority {
         border-left: 4px solid #ff6b6b;
+        color: #000000;
     }
     .medium-priority {
         border-left: 4px solid #ffa726;
+        color: #000000;
     }
     .low-priority {
         border-left: 4px solid #66bb6a;
+        color: #000000;
     }
     .toxic-alert {
         background-color: #ffebee;
@@ -47,6 +52,7 @@ st.markdown("""
         padding: 1rem;
         border-radius: 0.5rem;
         margin-bottom: 1rem;
+        color: #000000;
     }
     .positive-highlight {
         background-color: #e8f5e8;
@@ -54,6 +60,7 @@ st.markdown("""
         padding: 1rem;
         border-radius: 0.5rem;
         margin-bottom: 1rem;
+        color: #000000;
     }
     .review-text-box {
         background-color: #f8f9fa;
@@ -62,6 +69,7 @@ st.markdown("""
         border: 1px solid #e1e5eb;
         margin: 0.5rem 0;
         font-style: italic;
+        color: #000000;
     }
 </style>
 """, unsafe_allow_html=True)
