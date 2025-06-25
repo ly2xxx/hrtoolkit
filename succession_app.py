@@ -626,16 +626,6 @@ def main():
         # Display the data table
         st.dataframe(reviews_df, use_container_width=True)
         
-        # Download sample CSV template
-        with open("sample_360_reviews.csv", "rb") as file:
-            st.download_button(
-                label="📥 Download Sample CSV Template",
-                data=file.read(),
-                file_name="sample_360_reviews.csv",
-                mime="text/csv",
-                help="Download this sample CSV file as a template for your own data"
-            )
-        
         # Data summary
         st.markdown("### Data Summary")
         col1, col2, col3 = st.columns(3)
