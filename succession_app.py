@@ -80,6 +80,11 @@ def load_sample_data():
     return generate_360_review_data()
 
 @st.cache_data
+def load_csv_data(csv_file):
+    """Load and cache CSV data from uploaded file"""
+    return pd.read_csv(csv_file)
+
+@st.cache_data
 def get_succession_analyzer(reviews_df):
     """Create and cache succession planning analyzer"""
     return SuccessionPlanningAnalyzer(reviews_df)
@@ -122,7 +127,7 @@ def display_succession_candidates():
     """Display succession planning candidates"""
     st.header("🎯 Succession Planning Dashboard")
     
-    reviews_df = load_sample_data()
+    reviews_df = get_current_data()
     analyzer = get_succession_analyzer(reviews_df)
     
     # Get succession candidates
@@ -173,7 +178,7 @@ def display_development_plans():
     """Display personalized development plans"""
     st.header("📈 Personalized Development Plans")
     
-    reviews_df = load_sample_data()
+    reviews_df = get_current_data()
     analyzer = get_succession_analyzer(reviews_df)
     
     # Employee selection
@@ -230,7 +235,7 @@ def display_team_analytics():
     """Display team-level analytics and insights"""
     st.header("📊 Team Analytics & Insights")
     
-    reviews_df = load_sample_data()
+    reviews_df = get_current_data()
     analyzer = get_succession_analyzer(reviews_df)
     employee_scores = analyzer.calculate_employee_scores()
     
@@ -310,7 +315,7 @@ def display_team_dynamics():
     """Display team dynamics analysis including toxic behavior detection"""
     st.header("🤝 Team Dynamics Analysis")
     
-    reviews_df = load_sample_data()
+    reviews_df = get_current_data()
     dynamics_analyzer = TeamDynamicsAnalyzer(reviews_df)
     
     # Generate team health report
@@ -473,7 +478,7 @@ def display_enhanced_development_plans():
     """Display enhanced development plans with review text analysis"""
     st.header("📈 Enhanced Development Plans")
     
-    reviews_df = load_sample_data()
+    reviews_df = get_current_data()
     analyzer = get_succession_analyzer(reviews_df)
     
     # Employee selection
@@ -538,6 +543,13 @@ def display_enhanced_development_plans():
                 </div>
                 """, unsafe_allow_html=True)
 
+def get_current_data():
+    """Get current dataset from session state or sample data"""
+    if 'current_data' in st.session_state:
+        return st.session_state.current_data
+    else:
+        return load_sample_data()
+
 def main():
     """Main application"""
     st.title("🎯 AI-Powered Succession Planning")
@@ -562,9 +574,43 @@ def main():
     elif page == "Team Analytics":
         display_team_analytics()
     elif page == "Raw Data":
-        st.header("📋 Sample 360-Degree Review Data")
-        reviews_df = load_sample_data()
-        st.dataframe(reviews_df)
+        st.header("📋 360-Degree Review Data")
+        
+        # CSV file upload
+        uploaded_file = st.file_uploader(
+            "Upload your own 360-degree review data (CSV format)",
+            type=['csv'],
+            help="Upload a CSV file with columns: employee_name, employee_role, employee_level, years_experience, team_size, reviewer_type, review_date, review_text, and competency scores"
+        )
+        
+        # Load data from uploaded file or use sample data
+        if uploaded_file is not None:
+            try:
+                reviews_df = load_csv_data(uploaded_file)
+                st.session_state.current_data = reviews_df
+                st.success(f"✅ Successfully loaded {len(reviews_df)} records from uploaded file")
+            except Exception as e:
+                st.error(f"❌ Error loading CSV file: {str(e)}")
+                st.info("Using sample data instead...")
+                reviews_df = load_sample_data()
+                st.session_state.current_data = reviews_df
+        else:
+            reviews_df = get_current_data()
+            if 'current_data' not in st.session_state:
+                st.info("📁 Showing sample data. Upload your own CSV file above to use custom data.")
+        
+        # Display the data table
+        st.dataframe(reviews_df, use_container_width=True)
+        
+        # Download sample CSV template
+        with open("sample_360_reviews.csv", "rb") as file:
+            st.download_button(
+                label="📥 Download Sample CSV Template",
+                data=file.read(),
+                file_name="sample_360_reviews.csv",
+                mime="text/csv",
+                help="Download this sample CSV file as a template for your own data"
+            )
         
         # Data summary
         st.markdown("### Data Summary")

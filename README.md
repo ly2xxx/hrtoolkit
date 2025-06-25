@@ -155,7 +155,9 @@ streamlit run succession_app.py
 - **Performance Distribution**: Charts showing team performance patterns
 - **Experience vs Performance**: Scatter plot analysis
 
-### 5. Raw Data
+### 5. Raw Data with CSV Upload 📁
+- **CSV File Upload**: Upload your own 360-degree review data in CSV format
+- **Sample CSV Download**: Download a template CSV file with the correct format
 - **360-Review Data**: Complete dataset with original human review text
 - **Extracted Scores**: Shows how competency scores were derived from text
 - **Data Summary**: Key statistics about the dataset and text analysis
@@ -179,23 +181,25 @@ The application includes sample data for 8 team members across different levels:
 
 ### Adding Your Own Data
 
-1. **CSV Format**: Replace the sample data generation with your CSV file:
-   ```python
-   # In succession_app.py, modify the load_sample_data function
-   @st.cache_data
-   def load_sample_data():
-       return pd.read_csv('your_data.csv')
-   ```
+1. **CSV Upload Interface**: Use the built-in CSV upload feature in the Raw Data page:
+   - Navigate to the "Raw Data" page in the application
+   - Click "Browse files" to upload your CSV file
+   - The application will automatically validate and use your data across all pages
+   - Download the sample CSV template to see the correct format
 
-2. **Required Columns**:
+2. **Required CSV Columns**:
    - `employee_name`: Employee name
    - `employee_role`: Job title
-   - `employee_level`: Organizational level
-   - `years_experience`: Years of experience
-   - `reviewer_type`: Type of reviewer (Manager, Peer, etc.)
-   - Competency scores: `leadership_score`, `communication_score`, etc.
+   - `employee_level`: Organizational level (VP, Director, Manager, Professional, Graduate)
+   - `years_experience`: Years of experience (numeric)
+   - `team_size`: Number of people managed (numeric)
+   - `reviewer_type`: Type of reviewer (Manager, Peer, Direct Report, etc.)
+   - `review_date`: Date of review (YYYY-MM-DD format)
+   - `review_text`: The actual review text content
+   - Competency scores: `leadership_score`, `communication_score`, `strategic_thinking_score`, `technical_skills_score`, `problem_solving_score`, `team_collaboration_score`, `innovation_score`, `decision_making_score`, `adaptability_score`, `mentoring_score`, `customer_focus_score`, `results_delivery_score` (all 0.0-1.0)
    - `strengths`: Text feedback on strengths
    - `development_areas`: Text feedback on development needs
+   - `overall_rating`: Overall rating (0.0-1.0)
 
 ### Modifying Competencies
 

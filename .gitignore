@@ -185,3 +185,7 @@ Thumbs.db
 
 # UV cache
 .uv/
+
+# Explicitly include samples directory and all its contents
+!samples/
+!samples/**/*
