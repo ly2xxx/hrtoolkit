@@ -52,7 +52,7 @@ class SuccessionPlanningAnalyzer:
         """Identify top succession candidates for leadership roles"""
         employee_scores = self.calculate_employee_scores()
         
-        # Define role progression paths
+        # Define role progression paths - map to actual role names
         succession_paths = {
             "VP Engineering": ["Director", "Manager"],
             "Director Product": ["Manager", "Professional"],
@@ -66,9 +66,9 @@ class SuccessionPlanningAnalyzer:
         succession_candidates = {}
         
         for target_role in target_roles:
-            # Find current role holder
+            # Find current role holder - exact match to avoid duplicates
             current_holder = employee_scores[
-                employee_scores['role'].str.contains(target_role.split()[-1], case=False, na=False)
+                employee_scores['role'].str.replace(' ', '') == target_role.replace(' ', '')
             ]
             
             if len(current_holder) == 0:
