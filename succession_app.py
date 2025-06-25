@@ -79,10 +79,13 @@ def load_sample_data():
     """Load and cache sample 360-degree review data"""
     return generate_360_review_data()
 
-@st.cache_data
 def load_csv_data(csv_file):
-    """Load and cache CSV data from uploaded file"""
-    return pd.read_csv(csv_file)
+    """Load CSV data from uploaded file"""
+    df = pd.read_csv(csv_file)
+    # Convert review_date to datetime if it exists
+    if 'review_date' in df.columns:
+        df['review_date'] = pd.to_datetime(df['review_date'])
+    return df
 
 @st.cache_data
 def get_succession_analyzer(reviews_df):
@@ -510,7 +513,16 @@ def display_enhanced_development_plans():
         employee_reviews = reviews_df[reviews_df['employee_name'] == selected_employee]
         
         for _, review in employee_reviews.iterrows():
-            with st.expander(f"Review from {review['reviewer_type']} - {review['review_date'].strftime('%Y-%m-%d')}"):
+            # Handle date formatting safely
+            try:
+                if hasattr(review['review_date'], 'strftime'):
+                    date_str = review['review_date'].strftime('%Y-%m-%d')
+                else:
+                    date_str = str(review['review_date'])
+            except:
+                date_str = str(review['review_date'])
+                
+            with st.expander(f"Review from {review['reviewer_type']} - {date_str}"):
                 st.markdown(f"""
                 <div class="review-text-box">
                     {review['review_text']}
@@ -580,7 +592,8 @@ def main():
         uploaded_file = st.file_uploader(
             "Upload your own 360-degree review data (CSV format)",
             type=['csv'],
-            help="Upload a CSV file with columns: employee_name, employee_role, employee_level, years_experience, team_size, reviewer_type, review_date, review_text, and competency scores"
+            help="Upload a CSV file with columns: employee_name, employee_role, employee_level, years_experience, team_size, reviewer_type, review_date, review_text, and competency scores",
+            key="csv_uploader"
         )
         
         # Load data from uploaded file or use sample data
@@ -588,15 +601,26 @@ def main():
             try:
                 reviews_df = load_csv_data(uploaded_file)
                 st.session_state.current_data = reviews_df
+                st.session_state.data_source = "uploaded"
                 st.success(f"✅ Successfully loaded {len(reviews_df)} records from uploaded file")
             except Exception as e:
                 st.error(f"❌ Error loading CSV file: {str(e)}")
                 st.info("Using sample data instead...")
                 reviews_df = load_sample_data()
                 st.session_state.current_data = reviews_df
+                st.session_state.data_source = "sample"
         else:
-            reviews_df = get_current_data()
-            if 'current_data' not in st.session_state:
+            # If no file uploaded, use current data or sample data
+            if 'current_data' in st.session_state:
+                reviews_df = st.session_state.current_data
+                if st.session_state.get('data_source') == 'uploaded':
+                    st.info("📁 Using previously uploaded data. Upload a new file to replace it.")
+                else:
+                    st.info("📁 Showing sample data. Upload your own CSV file above to use custom data.")
+            else:
+                reviews_df = load_sample_data()
+                st.session_state.current_data = reviews_df
+                st.session_state.data_source = "sample"
                 st.info("📁 Showing sample data. Upload your own CSV file above to use custom data.")
         
         # Display the data table
