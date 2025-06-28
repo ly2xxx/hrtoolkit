@@ -295,4 +295,6 @@ For additional support, please refer to the Streamlit and uv documentation linke
 ---
 ## 📚 References
 ### Claude Code overview
-[![ MCP client](https://img.youtube.com/vi/iYiuzAsWnHU/hqdefault.jpg)](https://m.youtube.com/watch?v=iYiuzAsWnHU)
+[![Claude Code](https://img.youtube.com/vi/iYiuzAsWnHU/hqdefault.jpg)](https://m.youtube.com/watch?v=iYiuzAsWnHU)
+### Gemini CLI overview
+[![Gemini CLI](https://img.youtube.com/vi/_l6WvbM1TbI/hqdefault.jpg)](https://m.youtube.com/watch?v=_l6WvbM1TbI)
