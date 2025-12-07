@@ -1,3 +1,7 @@
+https://hrtoolkit.streamlit.app/
+
+![qr](hr.png)
+
 # 🎯 AI-Powered Succession Planning Application with Team Dynamics Analysis
 
 A comprehensive Streamlit application that demonstrates how Generative AI can transform talent management by analyzing human text reviews from 360-degree feedback to identify succession candidates, create personalized development plans, and detect toxic team dynamics.
